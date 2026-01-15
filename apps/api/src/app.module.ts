@@ -7,6 +7,7 @@ import { ProgramsModule } from './modules/programs/programs.module';
 import { EnrollmentsModule } from './modules/enrollments/enrollments.module';
 import { UsersModule } from './modules/users/users.module';
 import { FormsModule } from './modules/forms/forms.module';
+import { SuperadminModule } from './modules/superadmin/superadmin.module';
 
 //routes protected by default here
 @Module({
@@ -22,6 +23,7 @@ import { FormsModule } from './modules/forms/forms.module';
     ProgramsModule,
     FormsModule,
     EnrollmentsModule,
+    SuperadminModule,
   ],
 })
 export class AppModule {}
