@@ -13,6 +13,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { LogOut, User } from "lucide-react";
+import { ModeToggle } from "@/components/mode-toggle";
 
 export function Navbar() {
     const { data: session } = useSession();
@@ -24,7 +25,7 @@ export function Navbar() {
     return (
         <nav className="border-b bg-background">
             <div className="container mx-auto flex h-16 items-center justify-between px-4">
-                <Link href="/dashboard" className="text-xl font-bold bg-gradient-to-r from-indigo-500 to-purple-600 bg-clip-text text-transparent">
+                <Link href="/dashboard" className="text-xl font-bold text-primary">
                     MentorGain
                 </Link>
 
@@ -34,6 +35,7 @@ export function Navbar() {
                             <span className="text-sm font-medium">{session.user.name}</span>
                             <span className="text-xs text-muted-foreground capitalize">{(session.user as any).role}</span>
                         </div>
+                        <ModeToggle />
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button variant="ghost" className="relative h-10 w-10 rounded-full">
