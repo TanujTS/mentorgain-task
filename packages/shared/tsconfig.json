@@ -1,0 +1,16 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "module": "esnext",
+        "moduleResolution": "bundler",
+        "outDir": "dist",
+        "declaration": true,
+        "noEmit": false
+    },
+    "include": [
+        "index.ts"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
+}
