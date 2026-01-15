@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
+const baseURL = `${process.env.NEXT_PUBLIC_API_URL}/api`;
 
 export const apiClient = axios.create({
     baseURL,
@@ -13,7 +13,11 @@ export const apiClient = axios.create({
 apiClient.interceptors.response.use(
     (response) => response,
     (error) => {
-        // Handle global errors here if needed
+        if (error.response && error.response.status === 401) {
+            if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/login')) {
+                window.location.href = '/login';
+            }
+        }
         return Promise.reject(error);
     }
 );
