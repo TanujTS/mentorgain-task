@@ -58,7 +58,13 @@ export function UserEnrollmentsList() {
                             <div className="flex items-center text-sm text-muted-foreground">
                                 <Calendar className="mr-2 h-4 w-4" />
                                 <span>
-                                    {format(new Date(enrollment.mentorshipProgram.startDate), 'MMM d')} - {format(new Date(enrollment.mentorshipProgram.endDate), 'MMM d, yyyy')}
+                                    {enrollment.mentorshipProgram ? (
+                                        <>
+                                            {format(new Date(enrollment.mentorshipProgram.startDate), 'MMM d')} - {format(new Date(enrollment.mentorshipProgram.endDate), 'MMM d, yyyy')}
+                                        </>
+                                    ) : (
+                                        <span>Dates not available</span>
+                                    )}
                                 </span>
                             </div>
 
@@ -74,7 +80,7 @@ export function UserEnrollmentsList() {
                                                 <p className="text-xs text-muted-foreground font-medium mb-1">
                                                     {response.formField.title}
                                                 </p>
-                                                <p className="text-xs break-words">
+                                                <p className="text-xs break-all">
                                                     {response.textResponse ||
                                                         response.numberResponse ||
                                                         response.selectResponse ||

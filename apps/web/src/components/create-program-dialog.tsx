@@ -105,7 +105,7 @@ export function CreateProgramDialog({ children }: { children: React.ReactNode })
                 <DialogHeader className="px-6 py-4 border-b">
                     <DialogTitle>Create Mentorship Program</DialogTitle>
                 </DialogHeader>
-                <ScrollArea className="flex-1 px-6 py-4">
+                <div className="flex-1 overflow-y-auto px-6 py-4">
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                             <div className="grid grid-cols-2 gap-4">
@@ -289,7 +289,7 @@ export function CreateProgramDialog({ children }: { children: React.ReactNode })
                             </Button>
                         </form>
                     </Form>
-                </ScrollArea>
+                </div>
             </DialogContent>
         </Dialog>
     );

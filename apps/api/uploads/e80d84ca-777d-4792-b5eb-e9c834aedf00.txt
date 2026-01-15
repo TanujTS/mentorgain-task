@@ -1,0 +1,23 @@
+ackend:dev:     url: "/api/auth/callback/google?state=qXhnGxyXPYu0AcYFKBPIkbfykQY-IzoG&code=4%2F0ATX87lPH_4WWCSj725ZlZNFWLXGhW38rDxTpSDIktGzku1mkmaZBHetvaPWPCNDVkw_ZQA&scope=email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+openid&authuser=2&prompt=none"
+backend:dev:     statusCode: 500
+backend:dev:     message: "Internal server error"
+backend:dev: WARN [2025-12-15 14:37:49]: API Error occurred
+backend:dev:     service: "lt-backend"
+backend:dev:     method: "GET"
+backend:dev:     url: "/favicon.ico"
+backend:dev:     statusCode: 500
+backend:dev:     message: "Internal server error"
+frontend:dev:  GET / 200 in 55ms (compile: 1752µs, render: 53ms)
+frontend:dev:  GET /login 200 in 16ms (compile: 1982µs, render: 14ms)
+backend:dev: WARN [2025-12-15 14:38:38]: API Error occurred
+backend:dev:     service: "lt-backend"
+backend:dev:     method: "GET"
+backend:dev:     url: "/api/auth/callback/google?state=-oZC7ZSfKUr-3FbfJRdSL4aMe1gnHZdx&code=4%2F0ATX87lONXAS-DckBwW2YXY9sOERhJ-m_Af-7jeJlH5DcAnSvprLTpWTHjUAArn2yrNJZsQ&scope=email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+openid+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&authuser=0&prompt=none"
+backend:dev:     statusCode: 500
+backend:dev:     message: "Internal server error"
+backend:dev: WARN [2025-12-15 14:38:38]: API Error occurred
+backend:dev:     service: "lt-backend"
+backend:dev:     method: "GET"
+backend:dev:     url: "/favicon.ico"
+backend:dev:     statusCode: 500
+backend:dev:     message: "Internal server error"

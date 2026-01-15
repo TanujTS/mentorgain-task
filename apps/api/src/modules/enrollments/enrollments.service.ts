@@ -211,41 +211,40 @@ export class EnrollmentsService {
       );
     }
 
-    return db.transaction(async (tx) => {
-      const [newEnrollment] = await tx
-        .insert(enrollment)
-        .values({
-          userId,
-          mentorshipProgramId: dto.mentorshipProgramId,
-        })
-        .returning();
+    // db.transaction removed due to neon-http driver limitations
+    const [newEnrollment] = await db
+      .insert(enrollment)
+      .values({
+        userId,
+        mentorshipProgramId: dto.mentorshipProgramId,
+      })
+      .returning();
 
-      if (dto.responses && dto.responses.length > 0) {
-        await tx.insert(formResponse).values(
-          dto.responses.map((response) => ({
-            enrollmentId: newEnrollment.id,
-            formFieldId: response.formFieldId,
-            textResponse: response.textResponse,
-            numberResponse: response.numberResponse,
-            selectResponse: response.selectResponse,
-            multiSelectResponse: response.multiSelectResponse,
-            fileResponse: response.fileResponse,
-          })),
-        );
-      }
+    if (dto.responses && dto.responses.length > 0) {
+      await db.insert(formResponse).values(
+        dto.responses.map((response) => ({
+          enrollmentId: newEnrollment.id,
+          formFieldId: response.formFieldId,
+          textResponse: response.textResponse,
+          numberResponse: response.numberResponse,
+          selectResponse: response.selectResponse,
+          multiSelectResponse: response.multiSelectResponse,
+          fileResponse: response.fileResponse,
+        })),
+      );
+    }
 
-      // Return enrollment with responses
-      return tx.query.enrollment.findFirst({
-        where: eq(enrollment.id, newEnrollment.id),
-        with: {
-          mentorshipProgram: true,
-          responses: {
-            with: {
-              formField: true,
-            },
+    // Return enrollment with responses
+    return db.query.enrollment.findFirst({
+      where: eq(enrollment.id, newEnrollment.id),
+      with: {
+        mentorshipProgram: true,
+        responses: {
+          with: {
+            formField: true,
           },
         },
-      });
+      },
     });
   }
 

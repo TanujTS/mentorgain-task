@@ -59,6 +59,7 @@ export class ProgramsService {
         where: eq(mentorshipProgram.status, 'open'),
         with: {
           creator: true,
+          formFields: true,
         },
         extras: {
           enrollmentCount: sql<number>`(
@@ -81,6 +82,7 @@ export class ProgramsService {
         with: {
           creator: true,
           enrollments: true,
+          formFields: true,
         },
         extras: {
           enrollmentCount: sql<number>`(
