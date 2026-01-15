@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@repo/shared": "workspace:*",
+    "@tanstack/react-query": "^5.90.17",
+    "axios": "^1.13.2",
     "better-auth": "^1.4.13",
     "next": "16.1.2",
     "react": "19.2.3",
