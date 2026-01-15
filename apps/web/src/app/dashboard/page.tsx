@@ -2,11 +2,14 @@
 
 import { useSession } from "@/hooks/use-auth";
 
-import { UserProgramList } from "./components/user-program-list";
-import { AdminProgramList } from "./components/admin-program-list";
-import { SuperadminView } from "./components/superadmin-view";
+import { useQuery } from "@tanstack/react-query";
+import { programsService } from "@/services/programs.service";
+import { UserEnrollmentsList } from "../../components/user-enrollments-list";
+import { AdminProgramList } from "../../components/admin-program-list";
+import { SuperadminView } from "../../components/superadmin-view";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { BookOpen, Users, Clock } from "lucide-react";
 
 export default function DashboardPage() {
     const { data: session, isPending } = useSession();
@@ -38,47 +41,78 @@ export default function DashboardPage() {
             {isSuperAdmin ? (
                 <SuperadminView />
             ) : isAdmin ? (
-                <div className="grid gap-8">
-                    <div className="grid gap-4 md:grid-cols-3">
-                        <Card>
-                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                <CardTitle className="text-sm font-medium">Total Programs</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="text-2xl font-bold">-</div>
-                                <p className="text-xs text-muted-foreground">Active mentorship programs</p>
-                            </CardContent>
-                        </Card>
-                        <Card>
-                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                <CardTitle className="text-sm font-medium">Pending Enrollments</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="text-2xl font-bold">-</div>
-                                <p className="text-xs text-muted-foreground">Awaiting review</p>
-                            </CardContent>
-                        </Card>
-                        <Card>
-                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                <CardTitle className="text-sm font-medium">Active Users</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="text-2xl font-bold">-</div>
-                                <p className="text-xs text-muted-foreground">Registered on platform</p>
-                            </CardContent>
-                        </Card>
-                    </div>
-
+                <div className="space-y-8">
+                    <AdminStatsView />
                     <AdminProgramList />
                 </div>
             ) : (
                 <div className="space-y-6">
                     <div>
-                        <h2 className="text-2xl font-semibold tracking-tight mb-4">Available Programs</h2>
-                        <UserProgramList />
+                        <h2 className="text-2xl font-semibold tracking-tight mb-4">Your Applications</h2>
+                        <UserEnrollmentsList />
                     </div>
                 </div>
             )}
         </main>
+    );
+}
+
+function AdminStatsView() {
+    const { data: stats, isLoading } = useQuery({
+        queryKey: ['admin-stats'],
+        queryFn: programsService.getStats,
+    });
+
+    if (isLoading) {
+        return (
+            <div className="grid gap-4 md:grid-cols-3">
+                {[1, 2, 3].map((i) => (
+                    <Card key={i}>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <Skeleton className="h-4 w-20" />
+                        </CardHeader>
+                        <CardContent>
+                            <Skeleton className="h-8 w-10 mb-2" />
+                            <Skeleton className="h-3 w-32" />
+                        </CardContent>
+                    </Card>
+                ))}
+            </div>
+        );
+    }
+
+    return (
+        <div className="grid gap-4 md:grid-cols-3">
+            <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Your Programs</CardTitle>
+                    <BookOpen className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                    <div className="text-2xl font-bold">{stats?.totalPrograms || 0}</div>
+                    <p className="text-xs text-muted-foreground">Created by you</p>
+                </CardContent>
+            </Card>
+            <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Pending Applications</CardTitle>
+                    <Clock className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                    <div className="text-2xl font-bold">{stats?.pendingEnrollments || 0}</div>
+                    <p className="text-xs text-muted-foreground">Awaiting your review</p>
+                </CardContent>
+            </Card>
+            <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Active Students</CardTitle>
+                    <Users className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                    <div className="text-2xl font-bold">{stats?.activeEnrollments || 0}</div>
+                    <p className="text-xs text-muted-foreground">Enrolled in your programs</p>
+                </CardContent>
+            </Card>
+        </div>
     );
 }

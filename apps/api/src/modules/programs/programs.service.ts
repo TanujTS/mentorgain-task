@@ -4,8 +4,8 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { db } from '../../db';
-import { mentorshipProgram, formField } from '../../db/schema';
-import { eq, sql } from 'drizzle-orm';
+import { mentorshipProgram, formField, enrollment } from '../../db/schema';
+import { eq, sql, and, count } from 'drizzle-orm';
 import { CreateProgramDto, UpdateProgramDto } from './dto/programs.dto';
 import { UserSession } from '@thallesp/nestjs-better-auth';
 
@@ -13,7 +13,47 @@ import { UserSession } from '@thallesp/nestjs-better-auth';
 // controllers (express)
 @Injectable()
 export class ProgramsService {
-  async findAll(session: UserSession) {
+  async getStats(session: UserSession) {
+    if (session.user.role !== 'admin' && session.user.role !== 'superadmin') {
+      throw new ForbiddenException('Only admins can view stats');
+    }
+
+    const userId = session.user.id;
+
+    // 1. Total Programs
+    const [programStats] = await db
+      .select({ count: count() })
+      .from(mentorshipProgram)
+      .where(eq(mentorshipProgram.createdBy, userId));
+
+    // 2. Pending Enrollments
+    const [pendingStats] = await db
+      .select({ count: count() })
+      .from(enrollment)
+      .innerJoin(mentorshipProgram, eq(enrollment.mentorshipProgramId, mentorshipProgram.id))
+      .where(and(
+        eq(mentorshipProgram.createdBy, userId),
+        eq(enrollment.status, 'pending')
+      ));
+
+    // 3. Active Enrollments (Accepted)
+    const [activeStats] = await db
+      .select({ count: count() })
+      .from(enrollment)
+      .innerJoin(mentorshipProgram, eq(enrollment.mentorshipProgramId, mentorshipProgram.id))
+      .where(and(
+        eq(mentorshipProgram.createdBy, userId),
+        eq(enrollment.status, 'accepted')
+      ));
+
+    return {
+      totalPrograms: programStats.count,
+      pendingEnrollments: pendingStats.count,
+      activeEnrollments: activeStats.count
+    };
+  }
+
+  async findAll(session: UserSession, filter?: 'mine') {
     if (session.user.role === 'user') {
       const programs = await db.query.mentorshipProgram.findMany({
         where: eq(mentorshipProgram.status, 'open'),
@@ -32,7 +72,12 @@ export class ProgramsService {
       session.user.role === 'admin' ||
       session.user.role === 'superadmin'
     ) {
+      const whereClause = filter === 'mine'
+        ? eq(mentorshipProgram.createdBy, session.user.id)
+        : undefined;
+
       const programs = await db.query.mentorshipProgram.findMany({
+        where: whereClause,
         with: {
           creator: true,
           enrollments: true,

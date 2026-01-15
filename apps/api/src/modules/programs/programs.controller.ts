@@ -8,6 +8,7 @@ import {
   Param,
   ParseUUIDPipe,
   Session,
+  Query,
 } from '@nestjs/common';
 import { ProgramsService } from './programs.service';
 import { CreateProgramDto, UpdateProgramDto } from './dto/programs.dto';
@@ -16,12 +17,22 @@ import { Roles, type UserSession } from '@thallesp/nestjs-better-auth';
 // kind of like router here
 @Controller('programs')
 export class ProgramsController {
-  constructor(private readonly programsService: ProgramsService) {}
+  constructor(private readonly programsService: ProgramsService) { }
+
+  // GET /api/programs/stats
+  @Get('stats')
+  @Roles(['admin', 'superadmin'])
+  getStats(@Session() session: UserSession) {
+    return this.programsService.getStats(session);
+  }
 
   // GET /api/programs
   @Get()
-  findAll(@Session() session: UserSession) {
-    return this.programsService.findAll(session);
+  findAll(
+    @Session() session: UserSession,
+    @Query('filter') filter?: 'mine',
+  ) {
+    return this.programsService.findAll(session, filter);
   }
 
   // GET /api/programs/:id

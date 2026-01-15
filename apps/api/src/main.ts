@@ -22,7 +22,7 @@ async function bootstrap() {
       origin: string | undefined,
       callback: (err: Error | null, allow?: boolean) => void,
     ) => {
-      if (!origin || origin === process.env.WEB_URL) {
+      if (!origin || origin === process.env.WEB_URL || origin === 'http://localhost:3000') {
         callback(null, true);
       } else {
         console.warn(`Blocked request from unknown origin: ${origin}`);

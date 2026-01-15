@@ -25,7 +25,7 @@ export function SuperadminView() {
                         <Users className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        {isLoading ? <Skeleton className="h-8 w-20" /> : <div className="text-2xl font-bold">{stats?.totalUsers || 0}</div>}
+                        {isLoading ? <Skeleton className="h-8 w-20" /> : <div className="text-2xl font-bold">{stats?.users.totalUsers || 0}</div>}
                         <p className="text-xs text-muted-foreground">Registered on platform</p>
                     </CardContent>
                 </Card>
@@ -35,7 +35,7 @@ export function SuperadminView() {
                         <BookOpen className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        {isLoading ? <Skeleton className="h-8 w-20" /> : <div className="text-2xl font-bold">{stats?.totalPrograms || 0}</div>}
+                        {isLoading ? <Skeleton className="h-8 w-20" /> : <div className="text-2xl font-bold">{stats?.programs.totalPrograms || 0}</div>}
                         <p className="text-xs text-muted-foreground">Active mentorship programs</p>
                     </CardContent>
                 </Card>
@@ -45,7 +45,7 @@ export function SuperadminView() {
                         <GraduationCap className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        {isLoading ? <Skeleton className="h-8 w-20" /> : <div className="text-2xl font-bold">{stats?.totalEnrollments || 0}</div>}
+                        {isLoading ? <Skeleton className="h-8 w-20" /> : <div className="text-2xl font-bold">{stats?.enrollments.totalEnrollments || 0}</div>}
                         <p className="text-xs text-muted-foreground">Applications submitted</p>
                     </CardContent>
                 </Card>

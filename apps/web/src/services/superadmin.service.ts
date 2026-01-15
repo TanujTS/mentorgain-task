@@ -3,10 +3,22 @@ import { Program } from "./programs.service";
 import { Enrollment } from "./enrollments.service";
 
 export interface PlatformStats {
-    totalUsers: number;
-    totalPrograms: number;
-    activeEnrollments: number;
-    totalEnrollments: number;
+    users: {
+        totalUsers: number;
+        admins: number;
+        superadmins: number;
+    };
+    programs: {
+        totalPrograms: number;
+        openPrograms: number;
+        closedPrograms: number;
+    };
+    enrollments: {
+        totalEnrollments: number;
+        pending: number;
+        accepted: number;
+        rejected: number;
+    };
 }
 
 export interface User {

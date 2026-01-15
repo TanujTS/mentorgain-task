@@ -25,8 +25,8 @@ export function AdminProgramList() {
     const [isEditOpen, setIsEditOpen] = useState(false);
 
     const { data: programs, isLoading } = useQuery({
-        queryKey: ['programs'],
-        queryFn: programsService.getAll,
+        queryKey: ['programs', 'mine'],
+        queryFn: programsService.getMyPrograms,
     });
 
     const deleteMutation = useMutation({

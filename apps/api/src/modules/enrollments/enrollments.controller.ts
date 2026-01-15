@@ -16,7 +16,7 @@ import { Roles, type UserSession } from '@thallesp/nestjs-better-auth';
 
 @Controller('enrollments')
 export class EnrollmentsController {
-  constructor(private readonly enrollmentsService: EnrollmentsService) {}
+  constructor(private readonly enrollmentsService: EnrollmentsService) { }
 
   // GET /api/enrollments - List enrollments (filtered by role)
   @Get()
@@ -48,12 +48,14 @@ export class EnrollmentsController {
 
   // POST /api/enrollments - Create enrollment (user enrolls themselves)
   @Post()
+  @Roles(['user'])
   create(@Body() dto: CreateEnrollmentDto, @Session() session: UserSession) {
     return this.enrollmentsService.create(dto, session);
   }
 
   // DELETE /api/enrollments/:id - Withdraw enrollment (user withdraws their own)
   @Delete(':id')
+  @Roles(['user'])
   withdraw(
     @Param('id', ParseUUIDPipe) id: string,
     @Session() session: UserSession,

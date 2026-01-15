@@ -40,9 +40,28 @@ export interface CreateProgramDto {
 
 export type UpdateProgramDto = Partial<CreateProgramDto>;
 
+
+export interface AdminStats {
+    totalPrograms: number;
+    pendingEnrollments: number;
+    activeEnrollments: number;
+}
+
 export const programsService = {
+    getStats: async () => {
+        const response = await apiClient.get<AdminStats>('/programs/stats');
+        return response.data;
+    },
+
     getAll: async () => {
         const response = await apiClient.get<Program[]>('/programs');
+        return response.data;
+    },
+
+    getMyPrograms: async () => {
+        const response = await apiClient.get<Program[]>('/programs', {
+            params: { filter: 'mine' }
+        });
         return response.data;
     },
 

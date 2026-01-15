@@ -26,6 +26,13 @@ export interface FormResponse {
     selectResponse?: string;
     multiSelectResponse?: string[];
     fileResponse?: string;
+    formField: {
+        id: string;
+        title: string;
+        description: string | null;
+        fieldType: string;
+        options: string[] | null;
+    };
 }
 
 export interface CreateEnrollmentDto {
