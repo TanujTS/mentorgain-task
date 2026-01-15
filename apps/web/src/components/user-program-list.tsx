@@ -73,12 +73,19 @@ export function UserProgramList() {
                 const status = getEnrollmentStatus(program.id);
                 const isApplied = !!status;
 
+                const role = (session?.user as any)?.role;
+                const isAdmin = role === 'admin' || role === 'superadmin';
+
                 return (
                     <ProgramCard
                         key={program.id}
                         program={program}
                         action={
-                            isApplied ? (
+                            isAdmin ? (
+                                <Button className="w-full" disabled variant="secondary">
+                                    Admins cannot apply
+                                </Button>
+                            ) : isApplied ? (
                                 <Button className="w-full" disabled variant="outline">
                                     {status === 'accepted' ? 'Enrolled' : status === 'rejected' ? 'Application Rejected' : 'Application Pending'}
                                 </Button>
@@ -128,6 +135,6 @@ export function UserProgramList() {
                     />
                 );
             })}
-        </div>
+        </div >
     );
 }

@@ -60,9 +60,7 @@ export class CreateProgramDto {
   @Min(1)
   maxParticipants: number;
 
-  @IsString()
-  @IsNotEmpty()
-  createdBy: string; // TODO: Remove this once auth guard is implemented
+
 
   @IsArray()
   @ValidateNested({ each: true })
