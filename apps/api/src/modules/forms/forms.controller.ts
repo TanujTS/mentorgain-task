@@ -13,23 +13,25 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FormsService } from './forms.service';
-import {
-  CreateFormFieldDto,
-  UpdateFormFieldDto,
-  CreateFormFieldsDto,
-} from './dto/forms.dto';
+import { UpdateFormFieldDto, CreateFormFieldsDto } from './dto/forms.dto';
 import { Roles, type UserSession } from '@thallesp/nestjs-better-auth';
-import { diskStorage } from 'multer';
+import { diskStorage, type StorageEngine } from 'multer';
 import { extname, join } from 'path';
 import { v4 as uuidv4 } from 'uuid';
 
-const uploadStorage = diskStorage({
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument */
+const uploadStorage: StorageEngine = diskStorage({
   destination: join(process.cwd(), 'uploads'),
-  filename: (req, file, callback) => {
+  filename: (
+    _req: Express.Request,
+    file: Express.Multer.File,
+    callback: (error: Error | null, filename: string) => void,
+  ) => {
     const uniqueName = `${uuidv4()}${extname(file.originalname)}`;
     callback(null, uniqueName);
   },
 });
+/* eslint-enable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument */
 
 @Controller('forms')
 export class FormsController {
@@ -78,6 +80,7 @@ export class FormsController {
 
   // POST /api/forms/upload - Upload a file for form response
   @Post('upload')
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   @UseInterceptors(FileInterceptor('file', { storage: uploadStorage }))
   uploadFile(
     @UploadedFile() file: Express.Multer.File,

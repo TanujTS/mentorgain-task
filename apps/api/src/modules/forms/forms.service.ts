@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { db } from '../../db';
 import { formField, mentorshipProgram } from '../../db/schema';
-import { eq, and } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import { CreateFormFieldDto, UpdateFormFieldDto } from './dto/forms.dto';
 import { UserSession } from '@thallesp/nestjs-better-auth';
 import { existsSync, mkdirSync, unlinkSync } from 'fs';
@@ -157,11 +157,13 @@ export class FormsService {
     return { message: 'Form field deleted successfully' };
   }
 
-  handleFileUpload(file: Express.Multer.File, session: UserSession) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  handleFileUpload(file: Express.Multer.File, _session: UserSession) {
     if (!file) {
       throw new BadRequestException('No file uploaded');
     }
 
+    /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access */
     return {
       filename: file.filename,
       originalName: file.originalname,
@@ -169,6 +171,7 @@ export class FormsService {
       size: file.size,
       mimetype: file.mimetype,
     };
+    /* eslint-enable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access */
   }
 
   deleteFile(filename: string) {

@@ -33,6 +33,7 @@ export class UsersController {
   @Roles(['admin', 'superadmin'])
   getUserEnrollments(
     @Param('id', ParseUUIDPipe) id: string,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     @Session() session: UserSession,
   ) {
     return this.usersService.getUserEnrollments(id);

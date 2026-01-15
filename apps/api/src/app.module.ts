@@ -13,6 +13,7 @@ import { FormsModule } from './modules/forms/forms.module';
   imports: [
     AuthModule.forRoot({ auth }),
     // Serve uploaded files statically
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     ServeStaticModule.forRoot({
       rootPath: join(process.cwd(), 'uploads'),
       serveRoot: '/uploads',
