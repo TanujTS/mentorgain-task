@@ -8,6 +8,7 @@ import { EnrollmentsModule } from './modules/enrollments/enrollments.module';
 import { UsersModule } from './modules/users/users.module';
 import { FormsModule } from './modules/forms/forms.module';
 import { SuperadminModule } from './modules/superadmin/superadmin.module';
+import { HealthModule } from './modules/health/health.module';
 
 //routes protected by default here
 @Module({
@@ -19,6 +20,7 @@ import { SuperadminModule } from './modules/superadmin/superadmin.module';
       rootPath: join(process.cwd(), 'uploads'),
       serveRoot: '/uploads',
     }),
+    HealthModule,
     UsersModule,
     ProgramsModule,
     FormsModule,
