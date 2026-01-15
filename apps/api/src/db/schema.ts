@@ -114,8 +114,8 @@ export const mentorshipProgram = pgTable('mentorship_program', {
   id: uuid('id').defaultRandom().primaryKey(),
   name: text('name').notNull(),
   description: text('description').notNull(),
-  startDate: timestamp('start_date').notNull(),
-  endDate: timestamp('end_date').notNull(),
+  startDate: timestamp('start_date', { withTimezone: true }).notNull(),
+  endDate: timestamp('end_date', { withTimezone: true }).notNull(),
   maxParticipants: integer('max_participants').notNull(),
   status: statusEnum('status').notNull().default('open'),
   createdBy: uuid('created_by')

@@ -1,5 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { ValidationPipe } from '@nestjs/common';
 import 'dotenv/config';
 
 async function bootstrap() {
@@ -7,6 +8,15 @@ async function bootstrap() {
     bodyParser: false,
   });
 
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true, // remove properties not in dto
+      transform: true, // payload to dto instances
+      forbidNonWhitelisted: true, // Throw error if unknown properties sent
+    }),
+  );
+
+  app.setGlobalPrefix('api');
   app.enableCors({
     origin: (origin, callback) => {
       if (!origin || origin === process.env.WEB_URL) {
