@@ -10,9 +10,19 @@ export const auth = betterAuth({
       user,
       verification,
       session,
-      account
-    }
+      account,
+    },
   }),
+  user: {
+    additionalFields: {
+      role: {
+        type: ['user', 'admin', 'super_admin'],
+        required: false,
+        defaultValue: 'user',
+        input: false,
+      },
+    },
+  },
   socialProviders: {
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID as string,
@@ -20,5 +30,9 @@ export const auth = betterAuth({
     },
   },
   trustedOrigins: [process.env.WEB_URL!],
+  advanced: {
+    database: {
+      generateId: false,
+    },
+  },
 });
-
