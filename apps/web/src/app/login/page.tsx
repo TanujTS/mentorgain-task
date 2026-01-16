@@ -4,10 +4,19 @@ import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
     const [isLoading, setIsLoading] = useState(false);
+    const router = useRouter();
+    const { data: session } = authClient.useSession();
+
+    useEffect(() => {
+        if (session) {
+            router.push("/dashboard");
+        }
+    }, [session, router]);
 
     const handleGoogleSignIn = async () => {
         setIsLoading(true);
