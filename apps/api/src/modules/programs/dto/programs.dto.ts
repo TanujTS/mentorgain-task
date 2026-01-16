@@ -94,4 +94,10 @@ export class UpdateProgramDto {
   @IsEnum(['open', 'closed'])
   @IsOptional()
   status?: 'open' | 'closed';
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => FormFieldDto)
+  @IsOptional()
+  formFields?: FormFieldDto[];
 }

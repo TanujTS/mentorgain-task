@@ -4,9 +4,9 @@ import { useSession } from "@/hooks/use-auth";
 
 import { useQuery } from "@tanstack/react-query";
 import { programsService } from "@/services/programs.service";
-import { UserEnrollmentsList } from "../../components/user-enrollments-list";
-import { AdminProgramList } from "../../components/admin-program-list";
-import { SuperadminView } from "../../components/superadmin-view";
+import { UserEnrollmentsList } from "../../components/dashboard/user-enrollments-list";
+import { AdminProgramList } from "../../components/dashboard/admin-program-list";
+import { SuperadminView } from "../../components/dashboard/superadmin-view";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BookOpen, Users, Clock } from "lucide-react";

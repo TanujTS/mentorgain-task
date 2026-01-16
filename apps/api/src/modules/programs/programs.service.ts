@@ -171,6 +171,24 @@ export class ProgramsService {
       .where(eq(mentorshipProgram.id, id))
       .returning();
 
+    if (dto.formFields) {
+      await db.delete(formField).where(eq(formField.mentorshipProgramId, id));
+
+      if (dto.formFields.length > 0) {
+        await db.insert(formField).values(
+          dto.formFields.map((field, index) => ({
+            mentorshipProgramId: id,
+            title: field.title,
+            description: field.description,
+            fieldType: field.fieldType,
+            options: field.options,
+            isRequired: field.isRequired ?? false,
+            order: field.order ?? index,
+          })),
+        );
+      }
+    }
+
     return updated;
   }
 

@@ -3,11 +3,12 @@
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { UpdateProgramDto, Program, programsService } from "@/services/programs.service";
+import { CreateProgramDto, FormField, programsService } from "@/services/programs.service";
 import { Button } from "@/components/ui/button";
 import {
     Form,
     FormControl,
+    FormDescription,
     FormField as UIFormField,
     FormItem,
     FormLabel,
@@ -21,57 +22,42 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Loader2, Plus, Trash2 } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 
 const formFieldSchema = z.object({
-    id: z.string().optional(),
     title: z.string().min(1, "Title is required"),
     description: z.string().optional(),
     fieldType: z.enum(['text', 'number', 'select', 'multi_select', 'file']),
-    options: z.string().optional(),
+    options: z.string().optional(), // Comma separated for input, transformed on submit
     isRequired: z.boolean(),
     order: z.number(),
 });
 
-const editProgramSchema = z.object({
+const createProgramSchema = z.object({
     name: z.string().min(1, "Name is required"),
     description: z.string().min(1, "Description is required"),
     startDate: z.string().min(1, "Start date is required"),
     endDate: z.string().min(1, "End date is required"),
+    // Keep as string for form handling, transform to number on submit
     maxParticipants: z.string().min(1, "Required"),
     formFields: z.array(formFieldSchema).optional(),
 });
 
-type EditProgramFormValues = z.infer<typeof editProgramSchema>;
+type CreateProgramFormValues = z.infer<typeof createProgramSchema>;
 
-interface EditProgramDialogProps {
-    program: Program;
-    open: boolean;
-    onOpenChange: (open: boolean) => void;
-}
-
-export function EditProgramDialog({ program, open, onOpenChange }: EditProgramDialogProps) {
+export function CreateProgramDialog({ children }: { children: React.ReactNode }) {
+    const [open, setOpen] = useState(false);
     const queryClient = useQueryClient();
 
-    const form = useForm<EditProgramFormValues>({
-        resolver: zodResolver(editProgramSchema),
+    const form = useForm<CreateProgramFormValues>({
+        resolver: zodResolver(createProgramSchema),
         defaultValues: {
-            name: program.name,
-            description: program.description,
-            startDate: new Date(program.startDate).toISOString().split('T')[0],
-            endDate: new Date(program.endDate).toISOString().split('T')[0],
-            maxParticipants: String(program.maxParticipants),
-            formFields: program.formFields?.map(f => ({
-                id: f.id,
-                title: f.title,
-                description: f.description,
-                fieldType: f.fieldType,
-                options: f.options?.join(', '),
-                isRequired: f.isRequired,
-                order: f.order
-            })) || [],
+            maxParticipants: "10",
+            formFields: [],
+            startDate: new Date().toISOString().split('T')[0],
+            endDate: new Date(Date.now() + 86400000 * 30).toISOString().split('T')[0],
         },
     });
 
@@ -80,42 +66,22 @@ export function EditProgramDialog({ program, open, onOpenChange }: EditProgramDi
         name: "formFields",
     });
 
-    // Reset form when program changes
-    useEffect(() => {
-        if (open) {
-            form.reset({
-                name: program.name,
-                description: program.description,
-                startDate: new Date(program.startDate).toISOString().split('T')[0],
-                endDate: new Date(program.endDate).toISOString().split('T')[0],
-                maxParticipants: String(program.maxParticipants),
-                formFields: program.formFields?.map(f => ({
-                    id: f.id,
-                    title: f.title,
-                    description: f.description,
-                    fieldType: f.fieldType,
-                    options: f.options?.join(', '),
-                    isRequired: f.isRequired,
-                    order: f.order
-                })) || [],
-            });
-        }
-    }, [open, program, form]);
-
-    const updateMutation = useMutation({
-        mutationFn: (data: UpdateProgramDto) => programsService.update(program.id, data),
+    const createMutation = useMutation({
+        mutationFn: (data: CreateProgramDto) => programsService.create(data),
         onSuccess: () => {
-            toast.success("Program Updated");
-            onOpenChange(false);
+            toast.success("Program Created", { description: "The mentorship program has been created successfully." });
+            setOpen(false);
+            form.reset();
             queryClient.invalidateQueries({ queryKey: ['programs'] });
         },
         onError: () => {
-            toast.error("Failed to update program");
+            toast.error("Failed to create program");
         }
     });
 
-    const onSubmit = (values: EditProgramFormValues) => {
-        const payload: UpdateProgramDto = {
+    const onSubmit = (values: CreateProgramFormValues) => {
+        // Transform options string to array and dates to ISO
+        const payload: CreateProgramDto = {
             ...values,
             maxParticipants: Number(values.maxParticipants),
             startDate: new Date(values.startDate).toISOString(),
@@ -127,16 +93,19 @@ export function EditProgramDialog({ program, open, onOpenChange }: EditProgramDi
                 fieldType: f.fieldType as any,
             }))
         };
-        updateMutation.mutate(payload);
+        createMutation.mutate(payload);
     };
 
     return (
-        <Dialog open={open} onOpenChange={onOpenChange}>
+        <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+                {children}
+            </DialogTrigger>
             <DialogContent className="max-w-2xl max-h-[90vh] flex flex-col p-0">
                 <DialogHeader className="px-6 py-4 border-b">
-                    <DialogTitle>Edit Program</DialogTitle>
+                    <DialogTitle>Create Mentorship Program</DialogTitle>
                 </DialogHeader>
-                <ScrollArea className="flex-1 px-6 py-4">
+                <ScrollArea className="flex-1 px-6 py-4 overflow-y-auto">
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                             <div className="grid grid-cols-2 gap-4">
@@ -267,6 +236,7 @@ export function EditProgramDialog({ program, open, onOpenChange }: EditProgramDi
                                                     </FormItem>
                                                 )}
                                             />
+                                            {/* Show options only for select types */}
                                             {(form.watch(`formFields.${index}.fieldType`) === 'select' || form.watch(`formFields.${index}.fieldType`) === 'multi_select') && (
                                                 <UIFormField
                                                     control={form.control}
@@ -313,9 +283,9 @@ export function EditProgramDialog({ program, open, onOpenChange }: EditProgramDi
                                 ))}
                             </div>
 
-                            <Button type="submit" className="w-full" disabled={updateMutation.isPending}>
-                                {updateMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                                Update Program
+                            <Button type="submit" className="w-full" disabled={createMutation.isPending}>
+                                {createMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                                Create Program
                             </Button>
                         </form>
                     </Form>

@@ -3,7 +3,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { programsService } from "@/services/programs.service";
 import { enrollmentsService } from "@/services/enrollments.service";
-import { ProgramCard } from "./program-card";
+import { ProgramCard } from "../programs/program-card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";

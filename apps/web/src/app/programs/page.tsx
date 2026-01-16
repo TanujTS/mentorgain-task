@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { programsService } from "@/services/programs.service";
-import { UserProgramList } from "../../components/user-program-list";
+import { UserProgramList } from "../../components/dashboard/user-program-list";
 import { Navbar } from "@/components/navbar";
 
 export default function ProgramsPage() {
