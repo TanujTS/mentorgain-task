@@ -39,7 +39,7 @@ export default function Home() {
           Empowering Growth Through <span className="text-primary">Mentorship</span>
         </h1>
         <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-          Connect with industry experts, accelerate your career, and unlock your full potential with MentorGain's structured mentorship programs.
+          Connect with industry experts, accelerate your career, and unlock your full potential with Mentorgain's structured mentorship programs.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           {session ? (

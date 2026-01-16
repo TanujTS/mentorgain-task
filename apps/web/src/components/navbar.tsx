@@ -41,25 +41,33 @@ export function Navbar() {
     ];
 
     return (
-        <HeroNavbar onMenuOpenChange={setIsMenuOpen} maxWidth="xl" position="sticky">
+        <HeroNavbar
+            isBordered
+            isMenuOpen={isMenuOpen}
+            onMenuOpenChange={setIsMenuOpen}
+            maxWidth="full"
+            position="sticky"
+            height="5rem"
+            className="bg-background/80 backdrop-blur-md"
+        >
             <NavbarContent>
                 <NavbarMenuToggle
                     aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-                    className="sm:hidden"
+                    className="sm:hidden text-foreground"
                 />
                 <NavbarBrand>
-                    <Link href="/" className="font-bold text-inherit text-xl">
-                        MentorGain
+                    <Link href="/" className="font-bold text-inherit text-3xl">
+                        Mentorgain
                     </Link>
                 </NavbarBrand>
             </NavbarContent>
 
-            <NavbarContent className="hidden sm:flex gap-4" justify="center">
+            <NavbarContent className="hidden sm:flex gap-6" justify="center">
                 {navItems.map((item) => (
                     <NavbarItem key={item.href} isActive={pathname === item.href}>
                         <Link
                             href={item.href}
-                            className={`text-sm font-medium transition-colors hover:text-primary ${pathname === item.href ? "text-primary font-bold" : "text-foreground"
+                            className={`text-lg font-medium transition-colors hover:text-primary ${pathname === item.href ? "text-primary font-bold" : "text-foreground"
                                 }`}
                         >
                             {item.name}
@@ -115,11 +123,11 @@ export function Navbar() {
                 )}
             </NavbarContent>
 
-            <NavbarMenu>
+            <NavbarMenu className="bg-background/90 backdrop-blur-md pt-6">
                 {navItems.map((item, index) => (
                     <NavbarMenuItem key={`${item}-${index}`}>
                         <Link
-                            className={`w-full ${pathname === item.href ? "text-primary font-bold" : "text-foreground"
+                            className={`w-full text-lg py-2 ${pathname === item.href ? "text-primary font-bold" : "text-foreground"
                                 }`}
                             href={item.href}
                             onClick={() => setIsMenuOpen(false)}
