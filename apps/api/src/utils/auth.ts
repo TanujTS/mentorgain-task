@@ -16,6 +16,7 @@ const getCookieDomain = () => {
 };
 
 export const auth = betterAuth({
+  baseURL: process.env.API_URL as string,
   database: drizzleAdapter(db, {
     provider: 'pg',
     schema: {
@@ -52,4 +53,3 @@ export const auth = betterAuth({
     },
   },
 });
-

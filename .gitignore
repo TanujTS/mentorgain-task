@@ -57,3 +57,6 @@ next-env.d.ts
 
 # pnpm
 .pnpm-debug.log
+
+# uploads
+uploads/
