@@ -25,9 +25,11 @@ import { MoreHorizontal, Shield, Trash } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useSession } from "@/hooks/use-auth";
 
 export function UsersTable() {
     const [search, setSearch] = useState("");
+    const { data: currentUser } = useSession();
     const queryClient = useQueryClient();
 
     const { data, isLoading } = useQuery({
@@ -110,15 +112,23 @@ export function UsersTable() {
                                                 </DropdownMenuItem>
                                                 <DropdownMenuSeparator />
                                                 <DropdownMenuLabel>Change Role</DropdownMenuLabel>
-                                                <DropdownMenuItem onClick={() => updateRoleMutation.mutate({ id: user.id, role: 'user' })}>
-                                                    Set as User
-                                                </DropdownMenuItem>
-                                                <DropdownMenuItem onClick={() => updateRoleMutation.mutate({ id: user.id, role: 'admin' })}>
-                                                    Set as Admin
-                                                </DropdownMenuItem>
-                                                <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={() => updateRoleMutation.mutate({ id: user.id, role: 'superadmin' })}>
-                                                    Set as Superadmin
-                                                </DropdownMenuItem>
+                                                {currentUser?.user?.id === user.id ? (
+                                                    <div className="px-2 py-1.5 text-sm text-muted-foreground text-xs italic">
+                                                        You cannot change your own role
+                                                    </div>
+                                                ) : (
+                                                    <>
+                                                        <DropdownMenuItem onClick={() => updateRoleMutation.mutate({ id: user.id, role: 'user' })}>
+                                                            Set as User
+                                                        </DropdownMenuItem>
+                                                        <DropdownMenuItem onClick={() => updateRoleMutation.mutate({ id: user.id, role: 'admin' })}>
+                                                            Set as Admin
+                                                        </DropdownMenuItem>
+                                                        <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={() => updateRoleMutation.mutate({ id: user.id, role: 'superadmin' })}>
+                                                            Set as Superadmin
+                                                        </DropdownMenuItem>
+                                                    </>
+                                                )}
                                             </DropdownMenuContent>
                                         </DropdownMenu>
                                     </TableCell>

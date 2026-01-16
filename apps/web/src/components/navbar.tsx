@@ -47,7 +47,7 @@ export function Navbar() {
             onMenuOpenChange={setIsMenuOpen}
             maxWidth="full"
             position="sticky"
-            height="5rem"
+            height="8rem"
             className="bg-background/80 backdrop-blur-md"
         >
             <NavbarContent>

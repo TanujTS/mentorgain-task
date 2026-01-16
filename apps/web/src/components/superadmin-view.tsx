@@ -4,6 +4,8 @@ import { useQuery } from "@tanstack/react-query";
 import { superadminService } from "@/services/superadmin.service";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { UsersTable } from "./users-table";
+import { SuperadminProgramList } from "./superadmin-program-list";
+import { SuperadminEnrollmentsList } from "./superadmin-enrollments-list";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Users, BookOpen, GraduationCap } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -54,7 +56,8 @@ export function SuperadminView() {
             <Tabs defaultValue="users" className="space-y-4">
                 <TabsList>
                     <TabsTrigger value="users">Manage Users</TabsTrigger>
-                    <TabsTrigger value="settings" disabled>System Settings</TabsTrigger>
+                    <TabsTrigger value="programs">Manage Programs</TabsTrigger>
+                    <TabsTrigger value="enrollments">View Enrollments</TabsTrigger>
                 </TabsList>
                 <TabsContent value="users" className="space-y-4">
                     <Card>
@@ -63,6 +66,26 @@ export function SuperadminView() {
                         </CardHeader>
                         <CardContent>
                             <UsersTable />
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+                <TabsContent value="programs" className="space-y-4">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>All Programs</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <SuperadminProgramList />
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+                <TabsContent value="enrollments" className="space-y-4">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>All Enrollments</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <SuperadminEnrollmentsList />
                         </CardContent>
                     </Card>
                 </TabsContent>
