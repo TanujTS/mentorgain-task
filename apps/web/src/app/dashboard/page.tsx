@@ -10,9 +10,18 @@ import { SuperadminView } from "../../components/dashboard/superadmin-view";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BookOpen, Users, Clock } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function DashboardPage() {
     const { data: session, isPending } = useSession();
+    const router = useRouter();
+
+    useEffect(() => {
+        if (!isPending && !session) {
+            router.push("/login");
+        }
+    }, [session, isPending, router]);
 
     if (isPending) {
         return <div className="flex h-screen w-full items-center justify-center">
@@ -20,12 +29,12 @@ export default function DashboardPage() {
         </div>;
     }
 
-    // If no session, middleware should handle, but fallback:
     if (!session) {
-        return <div className="flex h-screen items-center justify-center">Please log in.</div>;
+        return null;
     }
 
-    const role = (session.user as any).role;
+
+    const role = (session?.user as any)?.role;
     const isSuperAdmin = role === 'superadmin' || role === 'super_admin';
     const isAdmin = role === 'admin';
 
