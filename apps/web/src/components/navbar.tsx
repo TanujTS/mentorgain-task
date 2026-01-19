@@ -14,14 +14,13 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LogOut } from "lucide-react";
+import { LogOut, Menu, X } from "lucide-react";
 import { ModeToggle } from "@/components/mode-toggle";
 import {
     Navbar as HeroNavbar,
     NavbarBrand,
     NavbarContent,
     NavbarItem,
-    NavbarMenuToggle,
     NavbarMenu,
     NavbarMenuItem,
 } from "@heroui/navbar";
@@ -47,16 +46,20 @@ export function Navbar() {
             onMenuOpenChange={setIsMenuOpen}
             maxWidth="full"
             position="sticky"
-            height="8rem"
             className="bg-background/80 backdrop-blur-md"
         >
-            <NavbarContent>
-                <NavbarMenuToggle
-                    aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-                    className="sm:hidden text-foreground"
-                />
-                <NavbarBrand>
-                    <Link href="/" className="font-bold text-inherit text-3xl">
+            <NavbarContent justify="start">
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    className="sm:hidden mr-2"
+                    onClick={() => setIsMenuOpen(!isMenuOpen)}
+                >
+                    {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+                    <span className="sr-only">Toggle menu</span>
+                </Button>
+                <NavbarBrand className="gap-3 max-w-fit">
+                    <Link href="/" className="font-bold text-inherit text-2xl sm:text-3xl">
                         Mentorgain
                     </Link>
                 </NavbarBrand>
@@ -123,11 +126,13 @@ export function Navbar() {
                 )}
             </NavbarContent>
 
-            <NavbarMenu className="bg-background/90 backdrop-blur-md pt-6">
+            <NavbarMenu className="bg-background/95 backdrop-blur-xl pt-10 gap-6 h-[calc(100vh-4rem)]">
                 {navItems.map((item, index) => (
-                    <NavbarMenuItem key={`${item}-${index}`}>
+                    <NavbarMenuItem key={`${item.href}-${index}`}>
                         <Link
-                            className={`w-full text-lg py-2 ${pathname === item.href ? "text-primary font-bold" : "text-foreground"
+                            className={`w-full text-2xl py-3 block transition-all duration-200 ${pathname === item.href
+                                ? "text-primary font-bold pl-4 border-l-4 border-primary bg-primary/10 rounded-r-lg"
+                                : "text-foreground/80 hover:text-foreground font-medium pl-0 hover:pl-2"
                                 }`}
                             href={item.href}
                             onClick={() => setIsMenuOpen(false)}
