@@ -32,7 +32,7 @@ const formFieldSchema = z.object({
     fieldType: z.enum(['text', 'number', 'select', 'multi_select', 'file']),
     options: z.string().optional(),
     isRequired: z.boolean(),
-    order: z.number(),
+    order: z.number().optional(),
 });
 
 const editProgramSchema = z.object({
@@ -59,18 +59,18 @@ export function EditProgramDialog({ program, open, onOpenChange }: EditProgramDi
         resolver: zodResolver(editProgramSchema),
         defaultValues: {
             name: program.name,
-            description: program.description,
+            description: program.description || "",
             startDate: new Date(program.startDate).toISOString().split('T')[0],
             endDate: new Date(program.endDate).toISOString().split('T')[0],
             maxParticipants: String(program.maxParticipants),
             formFields: program.formFields?.map(f => ({
                 id: f.id,
                 title: f.title,
-                description: f.description,
+                description: f.description || "",
                 fieldType: f.fieldType,
-                options: f.options?.join(', '),
-                isRequired: f.isRequired,
-                order: f.order
+                options: f.options?.join(', ') || "",
+                isRequired: !!f.isRequired,
+                order: f.order ?? 0
             })) || [],
         },
     });
@@ -85,18 +85,18 @@ export function EditProgramDialog({ program, open, onOpenChange }: EditProgramDi
         if (open) {
             form.reset({
                 name: program.name,
-                description: program.description,
+                description: program.description || "",
                 startDate: new Date(program.startDate).toISOString().split('T')[0],
                 endDate: new Date(program.endDate).toISOString().split('T')[0],
                 maxParticipants: String(program.maxParticipants),
                 formFields: program.formFields?.map(f => ({
                     id: f.id,
                     title: f.title,
-                    description: f.description,
+                    description: f.description || "",
                     fieldType: f.fieldType,
-                    options: f.options?.join(', '),
-                    isRequired: f.isRequired,
-                    order: f.order
+                    options: f.options?.join(', ') || "",
+                    isRequired: !!f.isRequired,
+                    order: f.order ?? 0
                 })) || [],
             });
         }
@@ -120,12 +120,16 @@ export function EditProgramDialog({ program, open, onOpenChange }: EditProgramDi
             maxParticipants: Number(values.maxParticipants),
             startDate: new Date(values.startDate).toISOString(),
             endDate: new Date(values.endDate).toISOString(),
-            formFields: values.formFields?.map((f, index) => ({
-                ...f,
-                order: index,
-                options: f.options ? f.options.split(',').map(s => s.trim()).filter(Boolean) : undefined,
-                fieldType: f.fieldType as any,
-            }))
+            formFields: values.formFields?.map((f, index) => {
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                const { id, ...rest } = f;
+                return {
+                    ...rest,
+                    order: index,
+                    options: f.options ? f.options.split(',').map(s => s.trim()).filter(Boolean) : undefined,
+                    fieldType: f.fieldType as any,
+                };
+            })
         };
         updateMutation.mutate(payload);
     };
@@ -138,7 +142,11 @@ export function EditProgramDialog({ program, open, onOpenChange }: EditProgramDi
                 </DialogHeader>
                 <ScrollArea className="flex-1 px-6 py-4 overflow-y-auto">
                     <Form {...form}>
-                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                        <form onSubmit={form.handleSubmit(onSubmit, (errors) => {
+                            console.error("Form errors:", errors);
+                            const errorMessages = Object.entries(errors).map(([key, value]) => `${key}: ${(value as any).message}`).join(', ');
+                            toast.error(`Validation failed: ${errorMessages}`);
+                        })} className="space-y-6">
                             <div className="grid grid-cols-2 gap-4">
                                 <UIFormField
                                     control={form.control}
